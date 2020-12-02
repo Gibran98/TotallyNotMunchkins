@@ -7,6 +7,12 @@ const {TreasureList, DoorList} = require('./models/cardLists.js')
 
 let rooms = []
 
+const findRoom = name => rooms.findIndex(room => room.name == name)
+const findPlayer = (room, socketId) => (
+  room.players.findIndex(player => player.socketId == socketId)
+)
+const checkPregame = (players) => players.find(player => player.inPregame) != null
+
 // Socket IO
 io.on('connection', (socket) => {
   console.log(`A user connected: {socked.id}`)
@@ -244,67 +250,25 @@ io.on('connection', (socket) => {
   })
 })
 
-
 // Server
-server.get("/api/roomExists", (req, res, next) => {
-  let name = req.query.name
+server.get("/api/roomExists", (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
+  let { name } = req.query
 
-  return res.status(200).json({ans: findRoom(name) >=0})
+  return res.status(200).json({ans: findRoom(name) >= 0})
 })
 
-server.get("/api/roomIsJoinable", (req, res, next) => {
-  let name = req.query.name
+server.get("/api/roomIsJoinable", (req, res) => {
   res.header('Access-Control-Allow-Origin', '*')
+  let { name } = req.query
 
   let roomIndex = findRoom(name)
-  let ans = false
-  let message = ""
+  let message = roomIndex == -1 ? "Room doesn't exist." : (
+    rooms[roomIndex].players.length >= 4 ? "Room exists but is full." : ""
+  )
 
-  if (roomIndex >= 0) {
-    if (rooms[roomIndex].players.length < 4) {
-      ans = true
-    } else {
-      message = "Room exists but is full."
-    }
-  } else {
-    message = "Room doesn't exist."
-  }
-
-  return res.status(200).json({ans: ans, message: message})
+  return res.status(200).json({ans: message == "", message: message})
 })
-
-function findRoom(name) {
-  let ans = -1
-  rooms.forEach((room, i) => {
-    if (room.name === name) {
-      ans = i
-    }
-  })
-
-  return ans
-}
-
-function findPlayer(room, socketId) {
-  let ans = -1
-  room.players.forEach((player, i) => {
-    if (player.socketId == socketId) {
-      ans = i
-    }
-  })
-
-  return ans
-}
-
-function checkPregame(players) {
-  for(let i = 0; i < players.length; i++) {
-    if(players[i].inPregame) {
-      return true
-    }
-  }
-
-  return false
-}
 
 http.listen(3000, () => {
   console.log('Server started!')
