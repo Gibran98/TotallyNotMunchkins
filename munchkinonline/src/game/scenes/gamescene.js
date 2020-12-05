@@ -23,33 +23,26 @@ export default class GameScene extends Phaser.Scene {
 
     preload() {
         /*======================IMAGE LOADING=======================*/
-        this.load.image('cardBack', 'assets/cardBack.jpg')
-        this.load.image('doorCard', 'assets/door.jpg')
-        this.load.image('treasureCard', 'assets/treasure.jpg')
-        this.load.image('pogmin', 'assets/Pogmin.jpg')
-        this.load.image('doorDeck', 'assets/deck.png')
-        this.load.image('treasureDeck', 'assets/deck.png')
-        this.load.image('doorDiscard', 'assets/discard.png')
-        this.load.image('treasureDiscard', 'assets/discard.png')
-        this.load.image('slotBG', 'assets/slotBG.png')
+      const token_assets = ['tokenYellow', 'tokenBlue', 'tokenGreen', 'tokenRed']
+        .map(color => [`${color}-male`, `${color}-female`]).flat()
+        .map(value => [value, `${value}.png`]);
+      const assets = [
+        ['cardBack', 'cardBack.jpg'], ['doorCard', 'cardBack.jpg'], ['treasureCard', 'treasure.jpg'],
+        ['pogmin', 'Pogmin.jpg'], ['doorDeck', 'deck.png'], ['treasureDeck', 'deck.png'],
+        ['doorDiscard', 'discard.png'], ['treasureDiscard', 'discard.png'], ['slotBG', 'slotBG.png'],
+        ['playButton', 'playButton.png'], ['endTurn', 'endTurn.png'], ['goUpALevel', 'goUpALevel.jpg'],
+      ].concat(token_assets);
 
-        this.load.image('tokenYellow-male', 'assets/tokenYellow-male.png')
-        this.load.image('tokenYellow-female', 'assets/tokenYellow-female.png')
+      assets.forEach(asset => {
+        const name, filename = asset;
+        this.load.image(name, `assets/${filename}`);
+      });
 
-        this.load.image('tokenBlue-male', 'assets/tokenBlue-male.png')
-        this.load.image('tokenBlue-female', 'assets/tokenBlue-female.png')
-
-        this.load.image('tokenGreen-male', 'assets/tokenGreen-male.png')
-        this.load.image('tokenGreen-female', 'assets/tokenGreen-female.png')
-
-        this.load.image('tokenRed-male', 'assets/tokenRed-male.png')
-        this.load.image('tokenRed-female', 'assets/tokenRed-female.png')
-
-        this.load.image('playButton', 'assets/playButton.png')
-        this.load.image('endTurn', 'assets/endTurn.png')
-        this.load.image('goUpALevel', 'assets/goUpALevel.jpg')
-        /*======================OTHER DATA LOADING=======================*/
-        this.load.json('cards', 'data/cards.json')
+      this.load.image('playButton', 'assets/playButton.png')
+      this.load.image('endTurn', 'assets/endTurn.png')
+      this.load.image('goUpALevel', 'assets/goUpALevel.jpg')
+      /*======================OTHER DATA LOADING=======================*/
+      this.load.json('cards', 'data/cards.json')
     }
 
     create() {
@@ -57,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
 
 
         /*======================SCENE COMPONENTS CREATION=======================*/
-        
+
         // Add cards object list
         this.cardList = this.cache.json.get('cards').cards
 
@@ -92,13 +85,13 @@ export default class GameScene extends Phaser.Scene {
             }
         })
 
-        this.opponents.forEach(opponent => { 
-            opponent.renderHand(hWidth, hHeight, vWidth, vHeight, cardWidth, cardHeight, offset) 
+        this.opponents.forEach(opponent => {
+            opponent.renderHand(hWidth, hHeight, vWidth, vHeight, cardWidth, cardHeight, offset)
         })
-        
+
         // Create and render the board
         let startTile = this.createBoard(hWidth, vHeight)
-        
+
         // Render the player's and opponents tokens
         this.playerList.forEach((player, index)=> {
             if (player.socketId == this.socket.id) {
@@ -115,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
                 })
             }
         })
-        
+
         // Render new game image and add click event
         let playButton = this.add.image(0, 0, 'playButton').setInteractive({ cursor: 'pointer' })
 
@@ -144,12 +137,12 @@ export default class GameScene extends Phaser.Scene {
         }, this)
 
         this.input.on('drop', function (pointer, gameObject, dropZone) {
-            
+
             // Card on Player Hand
             if (gameObject.data.get('type') === 'card' && dropZone.data.get('type') === 'hand') {
- 
+
                 updateLastPosition(gameObject)
-            
+
             // Token on Tile
             } else if (gameObject.data.get('type') === 'token' && dropZone.data.get('type') === 'tile') {
 
@@ -163,7 +156,7 @@ export default class GameScene extends Phaser.Scene {
                 } else {
                     returnToLastPosition(gameObject)
                 }
-            
+
             // Card on Discard
             } else if (gameObject.data.get('type') === 'card' && dropZone.data.get('type') === 'discard') {
                 if (gameObject.data.get('deck') === dropZone.data.get('deck')) {
@@ -173,7 +166,7 @@ export default class GameScene extends Phaser.Scene {
                 } else {
                     returnToLastPosition(gameObject)
                 }
-            
+
             // Card on Equipment Slot
             } else if (gameObject.data.get('type') === 'card' && dropZone.data.get('type') === 'slot') {
                 // Later check for equipment type compatibility
@@ -190,7 +183,7 @@ export default class GameScene extends Phaser.Scene {
                 } else {
                     returnToLastPosition(gameObject)
                 }
-            
+
             // Card on Opponent Hand (use card on opponent)
             } else if (gameObject.data.get('type') === 'card' && dropZone.data.get('type') === 'opponentHand') {
 
@@ -210,15 +203,15 @@ export default class GameScene extends Phaser.Scene {
                 returnToLastPosition(gameObject)
             }
         });
-        
+
         /*
         this.input.on('dragenter', function (pointer, gameObject, dropZone) {
-            
+
             //dropZone.setTint(0x00ff00);
-    
+
         });
         */
-    
+
         this.input.on('dragleave', function (pointer, gameObject, dropZone) {
             if (gameObject.data.get('type') === 'card' && dropZone.data.get('type') === 'hand') {
                 updateLastPosition(gameObject)
@@ -393,7 +386,7 @@ export default class GameScene extends Phaser.Scene {
             if (targetId == this.socket.id) {
                 return this.useCardEffect(card, this.player)
             } else {
-                this.opponents.forEach(opponent => { 
+                this.opponents.forEach(opponent => {
                     if (opponent.socketId == targetId) {
                         return this.useCardEffect(card, opponent)
                     }
