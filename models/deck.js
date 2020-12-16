@@ -1,29 +1,24 @@
 class Deck {
-    constructor() {
-        this.cardQueue = []
+  constructor() {
+    this.cardQueue = []
+  }
 
-        this.shuffleDeck = (cardList) => {
-            this.cardQueue = shuffleArray(cardList)
-        }
+  shuffleDeck(cardList) {
+    this.cardQueue = shuffleArray(cardList)
+  }
 
-        this.pop = () => {
-            return this.cardQueue.shift()
-        }
+  pop() {
+    return this.cardQueue.shift()
+  }
 
-        this.push = (card) => {
-            this.cardQueue.push(card)
-        }
-    }
+  push(card) {
+    this.cardQueue.push(card)
+  }
 }
 
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array
+  array.sort(() => Math.random() - 0.5);
+  return array
 }
 
 module.exports = { Deck, shuffleArray }
