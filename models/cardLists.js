@@ -1,78 +1,14 @@
+const arrayMultiplier = (arr, times) => {
+  const origArr = [...arr];
+  for(let i = 0; i < times; i++) {
+    arr.concat(origArr);
+  }
+  return arr;
+}
 
-const TreasureList = [
-    "Diamond Sword",
-    "Go Up A Level",
-
-    // Temporary duplicates
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-    "Diamond Sword",
-    "Go Up A Level",
-]
-
-const DoorList = [
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-
-    // Temporary duplicates
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-    "Pogmin", 
-    "Unpogmin", 
-    "Warrior", 
-    "Elf", 
-    "Duck of Doom",
-]
+const TreasureList = arrayMultiplier(['Diamond Sword', 'Go Up A Level'], 13);
+const DoorList = arrayMultiplier(
+  ['Pogmin', 'Unpogmin', 'Warrior', 'Elf', 'Duck of Doom'], 8,
+);
 
 module.exports = { TreasureList, DoorList }
